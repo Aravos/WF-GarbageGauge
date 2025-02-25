@@ -1,35 +1,30 @@
-// main.js
-const { app, BrowserWindow } = require('electron');
-const fs = require('fs');
-const path = require('node:path');
+const { app, BrowserWindow, ipcMain, screen } = require("electron");
+const { setCache, getAllCache } = require("./cache");
+const { captureScreen } = require("./capture");
+const path = require("path");
 
-// Optional: Handle creating/removing shortcuts on Windows when installing/uninstalling.
-if (require('electron-squirrel-startup')) {
-  app.quit();
-}
-
-const createWindow = () => {
+// Create the main window
+function createWindow() {
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
-    transparent: true,
-    frame: false,
+    fullscreen: true,
+    transparent: true, // Makes the window background transparent
+    frame: false,      // Removes the default window frame
     webPreferences: {
-      nodeIntegration: true,
-      preload: path.join(__dirname, 'preload.js'),
+      preload: path.join(__dirname, "preload.js"), // Load the preload script
+      contextIsolation: true, // Recommended for security
+      nodeIntegration: false, // Disable direct Node.js integration in the renderer
     },
   });
 
-  mainWindow.loadFile(path.join(__dirname, 'index.html'));
-  mainWindow.webContents.openDevTools();
-};
+  mainWindow.loadFile(path.join(__dirname, "index.html"));
+  // Uncomment to open DevTools:
+  // mainWindow.webContents.openDevTools();
+}
 
 app.whenReady().then(() => {
-  // Define file path and initialize content array
   const filePath = path.join(__dirname, 'output.txt');
   let content = [];
 
-  // Fetch items from the API
   fetch('https://api.warframe.market/v1/items', {
     headers: {
       'Language': 'en'
@@ -43,34 +38,32 @@ app.whenReady().then(() => {
     })
     .then(data => {
       const items = data.payload.items;
-      // Loop over the items and add their names to the content array
+
       items.forEach(item => {
-        // Use the English item name if available
-        const itemName = item.item_name ? item.item_name : 'Unknown Item';
-        const itemURL = item.url_name;
-        content.push(itemName + '\n' + itemURL );
+
+        const key = item.url_name || 'unknown';
+        const value = item.item_name || 'Unknown Item';
+        setCache(key, value);
       });
-      // Write the joined array (as a string) to the output file
-      fs.writeFile(filePath, content.join('\n'), (err) => {
-        if (err) {
-          console.error('Error writing file:', err);
-        } else {
-          console.log('Startup file written successfully');
-        }
-      });
+      console.log("Cache populated:", Object.keys(getAllCache()).length);
     })
     .catch(error => {
-      console.error('Error fetching items:', error);
-      // Removed listElement reference because it's undefined in the main process.
+      console.error("Error fetching items:", error);
     });
 
   createWindow();
 
-  app.on('activate', () => {
+  app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
 });
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') app.quit();
+
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") app.quit();
+});
+
+// Import the captureScreen function and handle the IPC call.
+ipcMain.handle("capture-screen", async () => {
+  return await captureScreen();
 });

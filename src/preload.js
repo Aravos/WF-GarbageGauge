@@ -1,6 +1,6 @@
-const { contextBridge } = require("electron");
-const { captureScreen } = require("./capture");
+// preload.js
+const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("api", {
-  captureScreen
+  captureScreen: () => ipcRenderer.invoke("capture-screen"),
 });
