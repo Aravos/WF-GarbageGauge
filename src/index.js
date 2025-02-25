@@ -1,53 +1,53 @@
 const { app, BrowserWindow, ipcMain, screen } = require("electron");
-const { setCache, getAllCache } = require("./cache");
-const { captureScreen } = require("./capture");
+const { setCache, getAllCache } = require("./cache.js");
+const { captureScreen } = require("./capture.js");
 const path = require("path");
+
+// Handle IPC from renderer
+ipcMain.handle("capture-screen", async () => {
+  try {
+    return await captureScreen();
+  } catch (err) {
+    console.error("Error capturing screen:", err);
+    return null;
+  }
+});
 
 // Create the main window
 function createWindow() {
   const mainWindow = new BrowserWindow({
     fullscreen: true,
-    transparent: true, // Makes the window background transparent
-    frame: false,      // Removes the default window frame
+    transparent: true, // Opaque background can be used for debugging; change as needed.
+    frame: false,
     webPreferences: {
-      preload: path.join(__dirname, "preload.js"), // Load the preload script
-      contextIsolation: true, // Recommended for security
-      nodeIntegration: false, // Disable direct Node.js integration in the renderer
+      preload: path.join(__dirname, "preload.js"), // Ensure this path is correct.
+      contextIsolation: false,
+      nodeIntegration: true, // Security: disable direct Node integration in renderer.
     },
   });
 
   mainWindow.loadFile(path.join(__dirname, "index.html"));
-  // Uncomment to open DevTools:
-  // mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
 }
 
 app.whenReady().then(() => {
-  const filePath = path.join(__dirname, 'output.txt');
-  let content = [];
-
-  fetch('https://api.warframe.market/v1/items', {
-    headers: {
-      'Language': 'en'
-    }
+  // Populate cache using the Warframe Market API:
+  fetch("https://api.warframe.market/v1/items", {
+    headers: { "Language": "en" },
   })
-    .then(response => {
+    .then((response) => {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       return response.json();
     })
-    .then(data => {
-      const items = data.payload.items;
-
-      items.forEach(item => {
-
-        const key = item.url_name || 'unknown';
-        const value = item.item_name || 'Unknown Item';
-        setCache(key, value);
+    .then((data) => {
+      data.payload.items.forEach((item) => {
+        setCache(item.url_name || "unknown", item.item_name || "Unknown Item");
       });
       console.log("Cache populated:", Object.keys(getAllCache()).length);
     })
-    .catch(error => {
+    .catch((error) => {
       console.error("Error fetching items:", error);
     });
 
@@ -58,12 +58,6 @@ app.whenReady().then(() => {
   });
 });
 
-
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();
-});
-
-// Import the captureScreen function and handle the IPC call.
-ipcMain.handle("capture-screen", async () => {
-  return await captureScreen();
 });

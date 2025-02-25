@@ -7,6 +7,56 @@ html, body {
   color: white;
 }
 
+/* Container to hold relic cards */
+.relic-info-container {
+  position: absolute;
+  top: 50%; /* Move it higher */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5%;
+  width: 100%;
+}
+
+
+/* Individual relic cards */
+.relic-card {
+  width: 10%; /* Increase width (default was likely 150px or smaller) */
+  height: 100px; /* Adjust height if needed */
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+
+/* Hover effect */
+.relic-card:hover {
+  transform: scale(1.5);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Relic name styling */
+.relic-card p:first-child {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+/* Price styling */
+.relic-card p:last-child {
+  color: #f4d03f; /* Gold-like color to match Warframe pricing */
+  font-size: 1rem;
+}
+
+
 /* Optional: Style the title if you want */
 h1 {
   text-align: center;
