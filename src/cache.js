@@ -60,7 +60,7 @@ async function loadCache() {
     }
 
     const data = await response.json();
-    const items = data.payload.items.slice(0, 10); // Limit cache to 10 items
+    const items = data.payload.items.slice(0, data.length); // Limit cache to 10 items
 
     console.log(`Fetching data for ${items.length} items...`);
 
