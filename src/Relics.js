@@ -1,6 +1,13 @@
+const { getAllCache, getCache, calculateRecentPrice } = require("./cache");
+
+function containerRelic() {
+    const relicContainer = document.createElement("div");
+    relicContainer.classList.add("relic-info-container");
+    return relicContainer;
+}
+
 function generateRelics() {
     const allCache = getAllCache();
-    console.log(allCache);
     const relicKeys = Object.keys(allCache);
 
     if (relicKeys.length === 0) {
@@ -12,22 +19,34 @@ function generateRelics() {
     const relics = [];
     for (let i = 0; i < numRelics; i++) {
         const randomIndex = Math.floor(Math.random() * relicKeys.length);
-        const relicName = allCache[relicKeys[randomIndex]];
+        const relicName = relicKeys[randomIndex];
         relics.push({ relicName });
     }
     return relics;
 }
 
-function renderRelicCards(relicContainer) {
+async function renderRelicCards(relicContainer) {
     relicContainer.innerHTML = "";
     if (onScreen) {
         const relics = generateRelics();
-        relics.forEach(relic => {
-        const cardElement = RelicInfoCard({ relicName: relic.relicName });
-        relicContainer.appendChild(cardElement);
-        });
+
+        for (const relic of relics) {
+            const url = getCache(relic.relicName);
+            if (!url) continue;
+
+            const avgPrice = await calculateRecentPrice(url); // Await here!
+            const cardElement = RelicInfoCard({ relicName: relic.relicName, avgPrice }); // Pass avgPrice correctly
+
+            if (cardElement instanceof Node) { // Ensure it's a valid DOM element
+                relicContainer.appendChild(cardElement);
+            } else {
+                console.error("RelicInfoCard did not return a valid Node:", cardElement);
+            }
+        }
+
         console.log(`${relics.length} relics rendered.`);
     }
 }
 
-module.exports = { generateRelics, renderRelicCards}
+
+module.exports = { containerRelic, generateRelics, renderRelicCards };

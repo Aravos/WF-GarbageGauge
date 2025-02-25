@@ -1,8 +1,7 @@
-// renderer.js
 const { ipcRenderer } = require("electron");
-const { getAllCache, loadCache } = require("./cache.js");
+const { loadCache } = require("./cache.js");
 const { RelicInfoCard } = require("./components/RelicInfoCard.js");
-const { renderRelicCards } = require("./Relics.js");
+const { renderRelicCards, containerRelic } = require("./Relics.js");
 
 let onScreen = false;
 
@@ -12,9 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const captureButton = document.getElementById("capture-button");
   
-  // Create relic container if not already in your index.html
-  const relicContainer = document.createElement("div");
-  relicContainer.classList.add("relic-info-container");
+  const relicContainer = containerRelic();
   document.body.appendChild(relicContainer);
   console.log("Relic container added to DOM.");
 
