@@ -13,6 +13,11 @@ ipcMain.handle("capture-screen", async () => {
   }
 });
 
+ipcMain.handle("get-cache", async () => {
+  return getAllCache(); // Send stored cache to renderer
+});
+
+
 // Create the main window
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -31,26 +36,6 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
-  // Populate cache using the Warframe Market API:
-  fetch("https://api.warframe.market/v1/items", {
-    headers: { "Language": "en" },
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      return response.json();
-    })
-    .then((data) => {
-      data.payload.items.forEach((item) => {
-        setCache(item.url_name || "unknown", item.item_name || "Unknown Item");
-      });
-      console.log("Cache populated:", Object.keys(getAllCache()).length);
-    })
-    .catch((error) => {
-      console.error("Error fetching items:", error);
-    });
-
   createWindow();
 
   app.on("activate", () => {

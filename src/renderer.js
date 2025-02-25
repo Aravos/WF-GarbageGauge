@@ -1,12 +1,34 @@
 // renderer.js
 const { ipcRenderer } = require("electron");
-const { getAllCache } = require("./cache.js");
+const { getAllCache, setCache } = require("./cache.js");
 const { RelicInfoCard } = require("./components/RelicInfoCard.js");
 
 let onScreen = false;
 
+function loadCache(){
+  fetch("https://api.warframe.market/v1/items", {
+    headers: { "Language": "en" },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      data.payload.items.forEach((item) => {
+        setCache(item.url_name || "unknown", item.item_name || "Unknown Item");
+      });
+      console.log("Cache populated:", Object.keys(getAllCache()).length);
+    })
+    .catch((error) => {
+      console.error("Error fetching items:", error);
+    });
+};
+
 document.addEventListener("DOMContentLoaded", () => {
   console.log("DOM fully loaded and parsed.");
+  loadCache();
 
   const captureButton = document.getElementById("capture-button");
   
