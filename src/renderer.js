@@ -18,14 +18,15 @@ document.addEventListener("DOMContentLoaded", () => {
   captureButton.addEventListener("click", async () => {
     onScreen = !onScreen;
     console.log(onScreen ? "CAPTURE INITIATED" : "CLEAR INITIATED");
-
-    ipcRenderer.invoke("capture-screen").then((filePath) => {
-      if (filePath) {
-        console.log("Screenshot saved at:", filePath);
-      } else {
-        console.error("Failed to capture screenshot.");
-      }
-    });
+    if(onScreen){
+      ipcRenderer.invoke("capture-screen").then((filePath) => {
+        if (filePath) {
+          console.log("Screenshot saved at:", filePath);
+        } else {
+          console.error("Failed to capture screenshot.");
+        }
+      });
+    }
 
     captureButton.textContent = onScreen ? "Clear" : "Capture Screenshot";
     renderRelicCards(relicContainer);
