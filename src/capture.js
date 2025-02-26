@@ -1,4 +1,3 @@
-// src/capture.js
 const { desktopCapturer, screen } = require("electron");
 const fs = require("fs");
 const path = require("path");

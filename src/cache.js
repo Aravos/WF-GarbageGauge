@@ -12,6 +12,12 @@ function getAllCache() {
   return cache;
 }
 
+async function loadValidWordsSet(validWordsSet, ItemSet){
+  ItemSet = new Set(Object.keys(getAllCache()));
+  ItemSet.forEach(item => item.split(/\s+/).forEach(word => validWordsSet.add(word)));
+  return ItemSet;
+}
+
 async function calculateRecentPrice(url_name) {
   try {
     const response = await fetch(`https://api.warframe.market/v1/items/${url_name}/orders`, {
@@ -69,9 +75,10 @@ async function loadCache() {
     }
 
     console.log("Cache populated:", Object.keys(getAllCache()).length);
+
   } catch (error) {
     console.error("Error fetching items:", error);
   }
 }
 
-module.exports = { getCache, getAllCache, loadCache, calculateRecentPrice };
+module.exports = { getCache, getAllCache, loadCache, calculateRecentPrice, loadValidWordsSet };

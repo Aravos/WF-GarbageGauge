@@ -1,13 +1,25 @@
 const { ipcRenderer } = require("electron");
-const { loadCache } = require("./cache.js");
+const { loadCache, loadValidWordsSet } = require("./cache.js");
 const { RelicInfoCard } = require("./components/RelicInfoCard.js");
 const { renderRelicCards, containerRelic } = require("./Relics.js");
 
 let onScreen = false;
+let validWordsSet = new Set();
+let ItemSet;
+
+async function initialize() {
+  try {
+    await loadCache();
+    ItemSet = await loadValidWordsSet(validWordsSet, ItemSet);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+initialize();
 
 document.addEventListener("DOMContentLoaded", () => {
   console.log("DOM fully loaded and parsed.");
-  loadCache();
 
   const captureButton = document.getElementById("capture-button");
   
@@ -22,13 +34,15 @@ document.addEventListener("DOMContentLoaded", () => {
       ipcRenderer.invoke("capture-screen").then((filePath) => {
         if (filePath) {
           console.log("Screenshot saved at:", filePath);
+          renderRelicCards(relicContainer, validWordsSet, ItemSet);
         } else {
           console.error("Failed to capture screenshot.");
         }
       });
+    }else{
+      relicContainer.innerHTML = "";
     }
 
     captureButton.textContent = onScreen ? "Clear" : "Capture Screenshot";
-    renderRelicCards(relicContainer);
   });
 });
