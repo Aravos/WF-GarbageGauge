@@ -11,6 +11,7 @@ async function initialize() {
   try {
     await loadCache();
     ItemSet = await loadValidWordsSet(validWordsSet, ItemSet);
+    validWordsSet.add("Forma");
   } catch (error) {
     console.error(error);
   }

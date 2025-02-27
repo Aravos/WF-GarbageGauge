@@ -105,3 +105,9 @@ button:hover {
   color: white;
   text-align: center;
 }
+
+.plat-icon {
+  height: 1em;
+  width: auto;
+  margin-bottom: -0.15em;
+}

@@ -14,7 +14,7 @@ async function runOCR(imagePath) {
     }
 }
 
-// ---------- UI Helper ----------
+// ---------- UI Relic Container ----------
 function containerRelic() {
   // This function should return a new DOM element
   const relicContainer = document.createElement("div");
@@ -25,17 +25,22 @@ function containerRelic() {
 
 function findSlidingWindowMatches(list, searchWords, minWindowSize = 2) {
   console.log(list);
-  const matches = new Set();
+  // const matches = new Set();
+  let matches = [];
   const numWords = searchWords.length;
   for (let windowSize = minWindowSize; windowSize <= numWords; windowSize++) {
     for (let start = 0; start <= numWords - windowSize; start++) {
       const phrase = searchWords.slice(start, start + windowSize).join(" ");
       if (list.has(phrase)) {
-        matches.add(phrase);
+        matches.push([start, phrase]);
+      }else if (phrase.toLowerCase() === "forma blueprint"){
+        matches.push([start, "Forma Blueprint"]);
       }
     }
   }
-  return Array.from(matches);
+  matches.sort((a, b) => a[0] - b[0]);
+  matches = matches.map(item => item[1]);
+  return matches;
 }
 
 async function processImage(validWordsSet, compareAndCheck) {
@@ -69,13 +74,12 @@ async function processImage(validWordsSet, compareAndCheck) {
 }
 // ---------- Generate Relics ----------
 async function generateRelics(validWordsSet , compareAndCheck) {
-  const inputImagePath = path.join(__dirname, "ss.jpg");
   const primeParts = await processImage(validWordsSet, compareAndCheck);
   if (!Array.isArray(primeParts) || primeParts.length === 0) {
     console.warn("No relics available.");
     return [];
   }
-  return primeParts.map(relicName => ({ relicName }));
+  return primeParts.map( relicName => ({ relicName }));
 }
 
 // ---------- Render Relic Cards ----------
@@ -84,10 +88,11 @@ async function renderRelicCards(relicContainer, validWordsSet, compareAndCheck) 
   if (typeof onScreen !== "undefined" && onScreen) {
     const relics = await generateRelics(validWordsSet, compareAndCheck);
     for (const relic of relics) {
-      const url = getCache(relic.relicName);
-      if (!url) continue;
-      const avgPrice = await calculateRecentPrice(url);
-      // RelicInfoCard should be defined elsewhere in your project.
+      let avgPrice = null;
+      if(relic.relicName !== "Forma Blueprint"){
+        const url = getCache(relic.relicName);
+        avgPrice = await calculateRecentPrice(url);
+      }
       const cardElement = RelicInfoCard({ relicName: relic.relicName, avgPrice });
       if (cardElement instanceof Node) {
         relicContainer.appendChild(cardElement);
