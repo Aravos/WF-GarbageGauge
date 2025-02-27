@@ -1,6 +1,6 @@
 # Warframe Relic Runner
 
-WF GarbageGauge is an overlay tool for Warframe that helps you quickly evaluate the average Platinum value of relic rewards, making it easier to decide which Prime part to select.
+Warframe Relic Runner is an overlay tool for Warframe that helps you quickly evaluate the average Platinum value of relic rewards, making it easier to decide which Prime part to select.
 
 ## Features
 - Captures a screenshot of your game when you crack open a relic.
