@@ -3,17 +3,6 @@ const { ipcRenderer } = require("electron");
 const fs = require("fs");
 const path = require("path");
 
-async function runOCR(imagePath) {
-    try {
-        const ocrText = await ipcRenderer.invoke("perform-ocr", imagePath);
-        console.log("OCR text from main process:", ocrText);
-        return ocrText;  // Return the result so that the caller gets a valid string.
-    } catch (err) {
-        console.error("Error during OCR invocation:", err);
-        return "";
-    }
-}
-
 // ---------- UI Relic Container ----------
 function containerRelic() {
   // This function should return a new DOM element
@@ -43,38 +32,37 @@ function findSlidingWindowMatches(list, searchWords, minWindowSize = 2) {
   return matches;
 }
 
-async function processImage(validWordsSet, compareAndCheck) {
-    try {
-      console.log(validWordsSet);
-      const inputImage = path.join(__dirname, "screenshot.png");
-      if (!fs.existsSync(inputImage)) {
-      console.error("Image file not found:", inputImage);
-      return [];
-      }
-      
-      // Await the OCR result from main process via IPC
-      const text = await runOCR(inputImage);
-      const cleanedText = text.replace(/[^a-zA-Z0-9\s]/g, "").replace(/\s+/g, " ").trim();
-      
-      // Filter out words not in validWordsSet
-      const cleanedWords = cleanedText
-      .split(" ")
-      .filter(word => validWordsSet.has(word));
-      console.log("Recognized Cleaned Words:", cleanedWords);
+// ---------- Generate Relics ----------
+async function runOCR(validWordsSet , compareAndCheck, dimensions) {
+  let primeParts;
+  try {
+    console.log(validWordsSet);
+    const inputImage = path.join(__dirname, "./screenshot.png");
+    if (!fs.existsSync(inputImage)) {
+    console.error("Image file not found:", inputImage);
+    return [];
+    }
+    
+    // Await the OCR result from main process via IPC
+    const text = await ipcRenderer.invoke("perform-ocr", inputImage, dimensions);
+    const cleanedText = text.replace(/[^a-zA-Z0-9\s]/g, "").replace(/\s+/g, " ").trim();
+    
+    // Filter out words not in validWordsSet
+    const cleanedWords = cleanedText
+    .split(" ")
+    .filter(word => validWordsSet.has(word));
+    console.log("Recognized Cleaned Words:", cleanedWords);
+    console.log("compareAndCheck:", compareAndCheck);
+    const matches = findSlidingWindowMatches(compareAndCheck, cleanedWords);
+    
+    console.log("Sliding Window Matches:", matches);
 
-      const matches = findSlidingWindowMatches(compareAndCheck, cleanedWords);
-      
-      console.log("Sliding Window Matches:", matches);
-
-      return matches.length ? matches : [];
+    primeParts = matches.length ? matches : [];
   } catch (error) {
       console.error("Error in OCR:", error);
-      return [];
+      primeParts = [];
   }
-}
-// ---------- Generate Relics ----------
-async function generateRelics(validWordsSet , compareAndCheck) {
-  const primeParts = await processImage(validWordsSet, compareAndCheck);
+
   if (!Array.isArray(primeParts) || primeParts.length === 0) {
     console.warn("No relics available.");
     return [];
@@ -83,10 +71,10 @@ async function generateRelics(validWordsSet , compareAndCheck) {
 }
 
 // ---------- Render Relic Cards ----------
-async function renderRelicCards(relicContainer, validWordsSet, compareAndCheck) {
+async function renderRelicCards(relicContainer, validWordsSet, compareAndCheck, dimensions) {
   relicContainer.innerHTML = "";
   if (typeof onScreen !== "undefined" && onScreen) {
-    const relics = await generateRelics(validWordsSet, compareAndCheck);
+    const relics = await runOCR(validWordsSet, compareAndCheck, dimensions);
     for (const relic of relics) {
       let avgPrice = null;
       if(relic.relicName !== "Forma Blueprint"){
@@ -104,4 +92,4 @@ async function renderRelicCards(relicContainer, validWordsSet, compareAndCheck) 
   }
 }
 
-module.exports = { containerRelic, generateRelics, renderRelicCards };
+module.exports = { containerRelic, runOCR, renderRelicCards };

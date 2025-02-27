@@ -47,7 +47,8 @@ ipcMain.handle("get-cache", async () => {
   return getAllCache();
 });
 
-async function processImageOCR(imagePath) {
+async function processImageOCR(imagePath, dimensions) {
+  console.log(dimensions)
   try {
     if (!fs.existsSync(imagePath)) {
       console.error("Image file not found:", imagePath);
@@ -60,22 +61,19 @@ async function processImageOCR(imagePath) {
     // Crop and preprocess the image.
     const croppedBuffer = await image
       .extract({
-        left: Math.floor(metadata.width * 0.25),
-        top: Math.floor(metadata.height * 0.38),
-        width: Math.floor(metadata.width * 0.5),
-        height: Math.floor(metadata.height * 0.05),
+        left: Math.floor(metadata.width * dimensions[0]),
+        top: Math.floor(metadata.height * dimensions[1]),
+        width: Math.floor(metadata.width * dimensions[2]),
+        height: Math.floor(metadata.height * dimensions[3]),
       })
       .greyscale()
       .gamma(2)
       .toBuffer();
     console.log("Image preprocessed successfully.");
 
-
-    // image for debugging.
     await sharp(croppedBuffer).toFile(path.join(__dirname, "final.png"));
     console.log("Final image saved as final.png.");
 
-    // Create and initialize the Tesseract worker.
     const worker = await createWorker("eng");
     const { data: { text } } = await worker.recognize(croppedBuffer);
     await worker.terminate();
@@ -87,8 +85,9 @@ async function processImageOCR(imagePath) {
     return "";
   }
 }
-ipcMain.handle("perform-ocr", async (event, imagePath) => {
-  const ocrResult = await processImageOCR(imagePath);
+ipcMain.handle("perform-ocr", async (event, imagePath, dimensions) => {
+  console.log(dimensions)
+  const ocrResult = await processImageOCR(imagePath, dimensions);
   console.log(ocrResult);
   return ocrResult;
 });

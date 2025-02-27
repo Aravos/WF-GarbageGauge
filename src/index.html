@@ -3,12 +3,45 @@
   <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="index.css">
+    <title>WF GarbageGauge Overlay</title>
   </head>
   <body>
+    <!-- Full-screen overlay with a cutout highlight area -->
+    <div class="overlay">
+      <div class="highlight-area"></div>
+    </div>
+    
+    <!-- Button container -->
     <div class="button-container">
       <button id="capture-button">Capture Screenshot</button>
+      <button id="capture-area-button">Show Capture Area</button>
     </div>
-    <!-- Include Tesseract.js from CDN (v5 version as an example) -->
+    
+    <!-- Slider container for adjusting the capture area (hidden by default) -->
+    <div class="slider-container">
+      <label>
+        Left:
+        <input id="slider-left" type="range" min="0" max="100" value="25">
+        <span id="value-left">25%</span>
+      </label>
+      <label>
+        Top:
+        <input id="slider-top" type="range" min="0" max="100" value="38">
+        <span id="value-top">38%</span>
+      </label>
+      <label>
+        Width:
+        <input id="slider-width" type="range" min="0" max="100" value="50">
+        <span id="value-width">50%</span>
+      </label>
+      <label>
+        Height:
+        <input id="slider-height" type="range" min="0" max="100" value="5">
+        <span id="value-height">5%</span>
+      </label>
+    </div>
+    
+    <!-- Include Tesseract.js from CDN -->
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <script src="renderer.js"></script>
   </body>
