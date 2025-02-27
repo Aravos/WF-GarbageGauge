@@ -12,7 +12,7 @@ Warframe Relic Runner is an overlay tool for Warframe that helps you quickly eva
 ## Installation & Setup
 ### Clone the repository
 ```sh
-git clone https://github.com/Aravos/WF-GarbageGauge.git
+git clone https://github.com/Aravos/Warframe-RelicRunner.git
 cd WF-GarbageGauge
 ```
 
