@@ -38,3 +38,4 @@ npm run
 ## Screenshots
 ![Overlay Example](screenshots/overlay-example.png)
 ![Prime Part Selection](screenshots/prime-selection.png)
+![In A 3 person Squad with Forma](screenshots/3squad-forma.png)
