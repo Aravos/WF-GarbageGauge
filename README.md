@@ -79,7 +79,7 @@ The overlay includes **four sliders** that let you fine-tune the capture region:
     <th style="text-align:center;">Capture Area</th>
   </tr>
   <tr>
-    <td><img src="screenshots/captureArea.png" alt="Select Capture Area"></td>
+    <td><img src="screenshots/CaptureArea.png" alt="Select Capture Area"></td>
     <td><img src="screenshots/CaptureAreaShowcase.png" alt="Capture Area"></td>
   </tr>
 </table>
