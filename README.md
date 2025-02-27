@@ -9,6 +9,7 @@
 - ✅ **Informed Decision Making** – Displays Prime Part values on-screen to help you choose the best reward.
 - 👥 **Team Support** – Works in solo play or teams of 1–4 players.
 - 🎛 **Adjustable Capture Area** – Use slider controls to modify the OCR capture region.
+- ⭐ **High-Value Relic Highlighting** – The most valuable relic reward is highlighted in **gold**, while others appear in **bronze**.
 - ⚖ **TOS Friendly** – This tool only captures screenshots and does **not** read game memory, making it compliant with Warframe’s Terms of Service.
 
 ---
@@ -39,12 +40,15 @@ npm run
 3. When you crack open a relic, click **Capture Screenshot** in the overlay.
 4. Wait a few seconds for the market values to load on-screen.
 5. **Choose the Prime part** based on the displayed Platinum value.
-6. Click **Clear** to reset the overlay.
-7. **Adjust the Capture Area (Optional)**  
+6. **Golden Text = Highest Value Item** 🏆  
+   - The **most valuable Prime part** is highlighted with **golden glowing text**.
+   - All other relic rewards appear in **bronze text**.
+7. Click **Clear** to reset the overlay.
+8. **Adjust the Capture Area (Optional)**  
    - Click **Show Capture Area** to reveal the slider controls.
    - Adjust the **Left, Top, Width, and Height** values to refine the OCR region.
    - The overlay updates dynamically to reflect your changes.
-8. Repeat the process for each relic.
+9. Repeat the process for each relic.
 
 ---
 
@@ -67,9 +71,9 @@ The overlay includes **four sliders** that let you fine-tune the capture region:
     <th style="text-align:center;">Squad with Forma</th>
   </tr>
   <tr>
-    <td><img src="screenshots/overlay-example.png" alt="Overlay Example"></td>
-    <td><img src="screenshots/prime-selection.png" alt="Prime Part Selection"></td>
-    <td><img src="screenshots/3squad-forma.png" alt="3-Person Squad"></td>
+    <td><img src="screenshots/overlay-example.webp" alt="Overlay Example"></td>
+    <td><img src="screenshots/prime-selection.webp" alt="Prime Part Selection"></td>
+    <td><img src="screenshots/Forma.webp" alt="3-Person Squad"></td>
   </tr>
 </table>
 
@@ -79,8 +83,8 @@ The overlay includes **four sliders** that let you fine-tune the capture region:
     <th style="text-align:center;">Capture Area</th>
   </tr>
   <tr>
-    <td><img src="screenshots/CaptureArea.png" alt="Select Capture Area"></td>
-    <td><img src="screenshots/CaptureAreaShowcase.png" alt="Capture Area"></td>
+    <td><img src="screenshots/CaptureArea.webp" alt="Select Capture Area"></td>
+    <td><img src="screenshots/CaptureAreaShowcase.webp" alt="Capture Area"></td>
   </tr>
 </table>
 
@@ -90,8 +94,8 @@ The overlay includes **four sliders** that let you fine-tune the capture region:
     <th style="text-align:center;">Duplicate Rewards</th>
   </tr>
   <tr>
-    <td><img src="screenshots/2squad.png" alt="2-Person Squad"></td>
-    <td><img src="screenshots/duplicates.png" alt="Duplicates"></td>
+    <td><img src="screenshots/2squad.webp" alt="2-Person Squad"></td>
+    <td><img src="screenshots/duplicates.webp" alt="Duplicates"></td>
   </tr>
 </table>
 

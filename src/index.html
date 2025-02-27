@@ -1,48 +1,54 @@
 <!DOCTYPE html>
-<html>
-  <head>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warframe Relic Runner</title>
     <link rel="stylesheet" href="index.css">
-    <title>WF GarbageGauge Overlay</title>
-  </head>
-  <body>
-    <!-- Full-screen overlay with a cutout highlight area -->
+</head>
+<body>
+    <!-- Overlay for highlight area -->
     <div class="overlay">
-      <div class="highlight-area"></div>
+        <div class="highlight-area"></div>
     </div>
-    
-    <!-- Button container -->
+
+    <!-- Relic Info Section -->
+    <div class="relic-info-container">
+        <!-- Dynamically filled with relic cards -->
+    </div>
+
+    <!-- Button Controls -->
     <div class="button-container">
-      <button id="capture-button">Capture Screenshot</button>
-      <button id="capture-area-button">Show Capture Area</button>
+        <button id="capture-button">Capture Screenshot</button>
+        <button id="capture-area-button">Adjust Capture Area</button>
     </div>
-    
-    <!-- Slider container for adjusting the capture area (hidden by default) -->
+
+    <!-- Sliders for Adjusting Capture Area -->
     <div class="slider-container">
-      <label>
-        Left:
-        <input id="slider-left" type="range" min="0" max="100" value="25">
-        <span id="value-left">25%</span>
-      </label>
-      <label>
-        Top:
-        <input id="slider-top" type="range" min="0" max="100" value="38">
-        <span id="value-top">38%</span>
-      </label>
-      <label>
-        Width:
-        <input id="slider-width" type="range" min="0" max="100" value="50">
-        <span id="value-width">50%</span>
-      </label>
-      <label>
-        Height:
-        <input id="slider-height" type="range" min="0" max="100" value="5">
-        <span id="value-height">5%</span>
-      </label>
+        <label>
+            Left:
+            <input id="slider-left" type="range" min="0" max="100" value="25">
+            <span id="value-left">25%</span>
+        </label>
+        <label>
+            Top:
+            <input id="slider-top" type="range" min="0" max="100" value="38">
+            <span id="value-top">38%</span>
+        </label>
+        <label>
+            Width:
+            <input id="slider-width" type="range" min="0" max="100" value="50">
+            <span id="value-width">50%</span>
+        </label>
+        <label>
+            Height:
+            <input id="slider-height" type="range" min="0" max="100" value="5">
+            <span id="value-height">5%</span>
+        </label>
     </div>
-    
-    <!-- Include Tesseract.js from CDN -->
+
+    <!-- Include Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <script src="renderer.js"></script>
-  </body>
+</body>
 </html>

@@ -1,33 +1,33 @@
-/* Ensure the entire window is used */
+/* Warframe UI-Inspired Styling */
 html, body {
   height: 100%;
   margin: 0;
   background: transparent;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  color: white;
+  font-family: 'Orbitron', sans-serif; /* Sleek, futuristic font */
+  color: #d7d7d7; /* Light gray to match Warframe's text */
 }
 
-/* Container to hold relic cards */
+/* Container for relic cards */
 .relic-info-container {
   position: absolute;
-  top: 50%; /* Move it higher */
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 1.5%;
-  width: 100%;
+  gap: 0.1%;
+  width: 90%;
 }
 
-
 /* Individual relic cards */
+/* Normal Relic Card */
 .relic-card {
-  width: 10%; /* Increase width (default was likely 150px or smaller) */
-  height: 100px; /* Adjust height if needed */
-  background: rgba(0, 0, 0, 0.8);
-  border-radius: 8px;
-  padding: 10px;
+  width: 13%;
+  height: 120px;
+  background: rgba(0, 0, 0, 0.85);
+  border-radius: 6px;
+  padding: 12px;
   text-align: center;
   color: white;
   display: flex;
@@ -35,100 +35,108 @@ html, body {
   justify-content: center;
   align-items: center;
   border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease-in-out;
+}
+
+/* Normal Relic Name */
+.relic-card p:first-child {
+  font-weight: bold;
+  font-size: 1rem;
+  text-transform: uppercase;
+  color: #cd7f32; /* Bronze color */
+  text-shadow: 0 0 6px rgba(205, 127, 50, 0.7);
+}
+
+/* High-Value Relic Card */
+.relic-card.high-value {
+  border: 2px solid #ffd700; /* Gold border */
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+}
+
+/* High-Value Relic Name */
+.relic-card.high-value p:first-child {
+  color: #ffd700; /* Gold color */
+  text-shadow: 0 0 10px rgba(255, 215, 0, 1);
 }
 
 
 /* Hover effect */
 .relic-card:hover {
-  transform: scale(1.5);
-  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateY(-5px);
 }
 
 /* Relic name styling */
 .relic-card p:first-child {
   font-weight: bold;
-  font-size: 1.1rem;
+  font-size: 1rem;
+  text-transform: uppercase;
 }
 
 /* Price styling */
 .relic-card p:last-child {
-  color: #f4d03f; /* Gold-like color to match Warframe pricing */
+  color: #f4d03f;
   font-size: 1rem;
+  text-shadow: 0 0 5px rgba(255, 255, 0, 0.5);
 }
 
-
-/* Optional: Style the title if you want */
+/* Title Styling */
 h1 {
   text-align: center;
   margin-top: 1rem;
+  font-size: 1.8rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
 }
 
-/* Position the button container */
+/* Button Styling */
 .button-container {
   position: absolute;
   left: 50%;
-  bottom: 5%; /* Lower position */
+  bottom: 3%;
   transform: translateX(-50%);
 }
 
 button {
-  position: relative;
-  padding: 1rem 2rem;
-  font-size: 1.5rem;
+  padding: 0.8rem 2rem;
+  font-size: 1.3rem;
   font-weight: bold;
   color: white;
-  background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent background */
-  border: 2px solid rgba(255, 255, 255, 0.5);
-  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
 }
-
 
 button:hover {
-  background-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
 }
 
-.relic-info-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.relic-card {
-  background: rgba(0, 0, 0, 0.8);
-  padding: 10px;
-  margin: 5px;
-  border-radius: 8px;
-  color: white;
-  text-align: center;
-}
-
-.plat-icon {
-  height: 1em;
-  width: auto;
-  margin-bottom: -0.15em;
-}
-
+/* Capture Area Styling */
 .highlight-area {
   position: absolute;
   background: transparent;
-  border: 2px solid white;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
   box-sizing: border-box;
 }
 
-/* Slider container (hidden by default) */
+/* Sliders (Hidden by default) */
 .slider-container {
   display: none;
   position: absolute;
-  bottom: 15%; /* Adjust as needed */
+  bottom: 10%;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.7);
   padding: 10px;
-  border-radius: 8px;
+  border-radius: 6px;
   color: white;
   display: flex;
   gap: 10px;
@@ -140,4 +148,11 @@ button:hover {
   flex-direction: column;
   align-items: center;
   font-size: 14px;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+.plat-icon {
+  height: 1em;
+  width: auto;
+  margin-bottom: -0.15em;
 }

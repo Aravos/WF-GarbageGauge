@@ -75,13 +75,28 @@ async function renderRelicCards(relicContainer, validWordsSet, compareAndCheck, 
   relicContainer.innerHTML = "";
   if (typeof onScreen !== "undefined" && onScreen) {
     const relics = await runOCR(validWordsSet, compareAndCheck, dimensions);
+    let highestPrice = 0;
+    const relicData = [];
+
     for (const relic of relics) {
       let avgPrice = null;
-      if(relic.relicName !== "Forma Blueprint"){
+      if (relic.relicName !== "Forma Blueprint") {
         const url = getCache(relic.relicName);
         avgPrice = await calculateRecentPrice(url);
       }
-      const cardElement = RelicInfoCard({ relicName: relic.relicName, avgPrice });
+      relicData.push({ relicName: relic.relicName, avgPrice });
+
+      // Track the highest price relic
+      if (avgPrice !== null && avgPrice > highestPrice) {
+        highestPrice = avgPrice;
+      }
+    }
+
+    // Render relic cards
+    for (const relic of relicData) {
+      const isHighValue = relic.avgPrice === highestPrice && highestPrice !== 0;
+      const cardElement = RelicInfoCard({ relicName: relic.relicName, avgPrice: relic.avgPrice, isHighValue });
+      
       if (cardElement instanceof Node) {
         relicContainer.appendChild(cardElement);
       } else {
