@@ -12,7 +12,7 @@ async function initialize() {
   try {
     await loadCache();
     ItemSet = await loadValidWordsSet(validWordsSet, ItemSet);
-    validWordsSet.add("Forma");
+    validWordsSet.add("Forma Blueprint");
   } catch (error) {
     console.error(error);
   }
@@ -88,7 +88,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const filePath = await ipcRenderer.invoke("capture-screen");
         if (filePath) {
           console.log("Screenshot saved at:", filePath);
+          console.log("passed 3")
           renderRelicCards(relicContainer, validWordsSet, ItemSet, dimensions);
+          console.log("passed 4")
         } else {
           console.error("Failed to capture screenshot.");
         }

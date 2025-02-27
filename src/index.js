@@ -48,7 +48,7 @@ ipcMain.handle("get-cache", async () => {
 });
 
 async function processImageOCR(imagePath, dimensions) {
-  console.log(dimensions)
+  console.log("Dimensions:", dimensions);
   try {
     if (!fs.existsSync(imagePath)) {
       console.error("Image file not found:", imagePath);
@@ -59,7 +59,6 @@ async function processImageOCR(imagePath, dimensions) {
     const image = sharp(imagePath);
     const metadata = await image.metadata();
 
-    // Crop + greyscale + gamma
     const croppedBuffer = await image
       .extract({
         left: Math.floor(metadata.width * dimensions[0]),
@@ -67,101 +66,136 @@ async function processImageOCR(imagePath, dimensions) {
         width: Math.floor(metadata.width * dimensions[2]),
         height: Math.floor(metadata.height * dimensions[3]),
       })
+      .modulate({
+        brightness: 0.01,
+        saturation: 2
+      })
+      .gamma(3)
       .greyscale()
-      .gamma(2)
+      .median(1)
       .toBuffer();
 
-    console.log("Image preprocessed successfully.");
     await sharp(croppedBuffer).toFile(path.join(__dirname, "final.png"));
     console.log("Final image saved as final.png.");
 
-    // Use Tesseract to get bounding box data
+    // Use Tesseract to get bounding box data (with TSV output)
     const worker = await createWorker("eng");
-    // Tesseract.js v6 example
-    const { data } = await worker.recognize(croppedBuffer, {}, { words: true });
+    const { data } = await worker.recognize(croppedBuffer, {}, {
+      words: true,
+      blocks: true,
+      layout: true,
+      hocr: true,
+      tsv: true
+    });
+
+    // Extract words (with coordinates) from the TSV data
+    const extractedWords = extractWordsFromTSV(data.tsv);
+    // console.log("Extracted words:", extractedWords);
+    // console.log("Blocks:", data.blocks);
+    // console.log("LayoutBlocks:", data.layoutBlocks);
+    // console.log("Lines:", data.lines);
+    // console.log("Paragraphs:", data.paragraphs);
+
     await worker.terminate();
 
-    // data.text is the raw text
-    // data.words is an array of word objects with bounding boxes
-    console.log("data  ",data);
-    const { text, words } = data;
-    console.log("OCR completed. Recognized text:", text);
+    console.log("OCR completed. Recognized text:", data.text);
+    const text = (data.text).toLowerCase();
 
-    // Now group words around anchor words 'Prime' and 'Forma'
+    // Group words around anchor words 'prime' and 'forma'
     const anchorWords = ["prime", "forma"];
-    const anchorGroups = groupWordsByAnchor(words, anchorWords);
-    console.log(anchorGroups)
-    //return { text, anchorGroups };
-    return text;
+    const anchorGroups = groupWordsByAnchor(extractedWords, anchorWords);
+
+    return { text, anchorGroups };
   } catch (error) {
     console.error("Error in OCR processing:", error);
-    //return { text: "", anchorGroups: [] };
     return null;
   }
 }
 
-
-function groupWordsByAnchor(words, anchorWords, maxDistance = 80) {
-  // We'll treat anchorWords as lowercase for matching
-  const anchors = anchorWords.map(a => a.toLowerCase());
+/**
+ * Groups words by the closest anchor.
+ * Each word is compared to any anchor word (matched by lowercase cleaned text).
+ * If a word is within maxDistance from an anchor’s center, it is added to that anchor's group.
+ */
+function groupWordsByAnchor(words, anchorKeywords, radius = 120) {
+  // Convert anchor keywords to lowercase for matching.
+  const anchorsLower = anchorKeywords.map(a => a.toLowerCase());
   
-  // This will store { anchor: wordObject, words: [ ... ] }
+  // First, build groups for anchor words.
   const groups = [];
-
-  for (const w of words) {
-    // Normalize text (remove punctuation, lowercase)
+  words.forEach(w => {
     const cleanedText = w.text.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
-    // We'll calculate the word's center coordinates
-    const wX = (w.bbox.x0 + w.bbox.x1) / 2;
-    const wY = (w.bbox.y0 + w.bbox.y1) / 2;
-
-    // Check if this word is an anchor
-    if (anchors.includes(cleanedText)) {
-      // Create a new group with this as the anchor
+    if (anchorsLower.includes(cleanedText)) {
       groups.push({
-        anchor: w,       // The anchor word object
-        words: [w],      // Start the group with the anchor word
+        anchor: w,
+        words: [w]
       });
-    } else {
-      // If not an anchor, see if it's near any existing anchor
-      let foundGroup = null;
-      let minDist = Infinity;
-
-      for (const group of groups) {
-        const a = group.anchor;
-        // Anchor center
-        const aX = (a.bbox.x0 + a.bbox.x1) / 2;
-        const aY = (a.bbox.y0 + a.bbox.y1) / 2;
-
-        // Euclidean distance
-        const dx = aX - wX;
-        const dy = aY - wY;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        // Keep track of nearest anchor group
-        if (dist < minDist && dist < maxDistance) {
-          minDist = dist;
-          foundGroup = group;
-        }
-      }
-
-      // If close enough to an anchor, add it to that group
-      if (foundGroup) {
-        foundGroup.words.push(w);
-      }
-      // Otherwise, it's unanchored and won't be in any group
     }
-  }
+  });
 
+  // Now, assign each non-anchor word to the closest anchor within the radius.
+  words.forEach(w => {
+    const cleanedText = w.text.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+    if (anchorsLower.includes(cleanedText)) return; // Skip anchor words themselves
+
+    // Calculate the center of the current word.
+    const wCenterX = (w.bbox.x0 + w.bbox.x1) / 2;
+    const wCenterY = (w.bbox.y0 + w.bbox.y1) / 2;
+
+    let closestGroup = null;
+    let minDist = Infinity;
+
+    groups.forEach(group => {
+      // Calculate the center of the anchor.
+      const a = group.anchor;
+      const aCenterX = (a.bbox.x0 + a.bbox.x1) / 2;
+      const aCenterY = (a.bbox.y0 + a.bbox.y1) / 2;
+
+      const dx = aCenterX - wCenterX;
+      const dy = aCenterY - wCenterY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+
+      if (dist < radius && dist < minDist) {
+        minDist = dist;
+        closestGroup = group;
+      }
+    });
+
+    if (closestGroup) {
+      closestGroup.words.push(w);
+    }
+  });
   return groups;
 }
 
 
+/**
+ * Extracts words and bounding box coordinates from TSV data.
+ * Expects TSV lines where columns 7,8,9,10 represent x0, y0, width, and height.
+ * The recognized word is in column 12 (index 11).
+ */
+function extractWordsFromTSV(tsvData) {
+  let words = [];
+  const lines = tsvData.split("\n");
+
+  for (const line of lines) {
+    const parts = line.split("\t");
+    if (parts.length >= 12) {
+      const text = parts[11]; // Use the 12th column for the recognized word
+      const bbox = {
+        x0: parseInt(parts[6], 10),
+        y0: parseInt(parts[7], 10),
+        x1: parseInt(parts[8], 10),
+        y1: parseInt(parts[9], 10)
+      };
+      if (text.trim()) words.push({ text, bbox });
+    }
+  }
+  return words;
+}
+
 ipcMain.handle("perform-ocr", async (event, imagePath, dimensions) => {
-  console.log(dimensions)
-  const ocrResult = await processImageOCR(imagePath, dimensions);
-  console.log(ocrResult);
-  return ocrResult;
+  const { text, anchorGroups } = await processImageOCR(imagePath, dimensions);
+  console.log("passed 1")
+  return { text, anchorGroups };
 });
-
-

@@ -5,69 +5,89 @@ const path = require("path");
 
 // ---------- UI Relic Container ----------
 function containerRelic() {
-  // This function should return a new DOM element
   const relicContainer = document.createElement("div");
   relicContainer.classList.add("relic-info-container");
   return relicContainer;
 }
 
-
-function findSlidingWindowMatches(list, searchWords, minWindowSize = 2) {
-  console.log(list);
-  // const matches = new Set();
-  let matches = [];
-  const numWords = searchWords.length;
-  for (let windowSize = minWindowSize; windowSize <= numWords; windowSize++) {
-    for (let start = 0; start <= numWords - windowSize; start++) {
-      const phrase = searchWords.slice(start, start + windowSize).join(" ");
-      if (list.has(phrase)) {
-        matches.push([start, phrase]);
-      }else if (phrase.toLowerCase() === "forma blueprint"){
-        matches.push([start, "Forma Blueprint"]);
-      }
+/**
+ * Generates all permutations (all possible orderings) of the input array.
+ * Warning: This can grow factorially with the number of items.
+ */
+function generatePermutations(arr) {
+  if (arr.length === 0) return [];
+  if (arr.length === 1) return [arr];
+  const results = [];
+  for (let i = 0; i < arr.length; i++) {
+    const current = arr[i];
+    const remaining = arr.slice(0, i).concat(arr.slice(i + 1));
+    const remainingPermutations = generatePermutations(remaining);
+    for (const perm of remainingPermutations) {
+      results.push([current, ...perm]);
     }
   }
-  matches.sort((a, b) => a[0] - b[0]);
-  matches = matches.map(item => item[1]);
+  return results;
+}
+
+function findPermutationMatches(compareSet, validWords) {
+  // Generate all possible orderings of the validWords.
+  const perms = generatePermutations(validWords);
+  const matches = [];
+  perms.forEach(perm => {
+    // Join the permutation array into a phrase.
+    const phrase = perm.join(" ");
+    if (compareSet.has(phrase)) {
+      matches.push(phrase);
+    }
+  });
   return matches;
 }
 
 // ---------- Generate Relics ----------
-async function runOCR(validWordsSet , compareAndCheck, dimensions) {
+async function runOCR(validWordsSet, compareAndCheck, dimensions) {
   let primeParts;
   try {
-    console.log(validWordsSet);
     const inputImage = path.join(__dirname, "./screenshot.png");
     if (!fs.existsSync(inputImage)) {
-    console.error("Image file not found:", inputImage);
-    return [];
+      console.error("Image file not found:", inputImage);
+      return [];
     }
     
-    // Await the OCR result from main process via IPC
-    const text = await ipcRenderer.invoke("perform-ocr", inputImage, dimensions);
-    const cleanedText = text.replace(/[^a-zA-Z0-9\s]/g, "").replace(/\s+/g, " ").trim();
+    // Get the OCR result (raw text and anchorGroups)
+    const { text, anchorGroups } = await ipcRenderer.invoke("perform-ocr", inputImage, dimensions);
+    console.log("OCR Text:", text);
+    console.log("OCR Anchor Groups:", anchorGroups);
     
-    // Filter out words not in validWordsSet
-    const cleanedWords = cleanedText
-    .split(" ")
-    .filter(word => validWordsSet.has(word));
-    console.log("Recognized Cleaned Words:", cleanedWords);
-    console.log("compareAndCheck:", compareAndCheck);
-    const matches = findSlidingWindowMatches(compareAndCheck, cleanedWords);
+    let anchorMatches = [];
+    if (anchorGroups && anchorGroups.length > 0) {
+      anchorGroups.forEach(group => {
+        // Clean and filter each word in the group.
+        const groupWords = group.words
+          .map(word => word.text.replace(/[^a-zA-Z0-9]/g, "").trim())
+          .filter(word => word !== "" && validWordsSet.has(word));
+        console.log("Cleaned Group Words:", groupWords);
+        if (groupWords.length > 0) {
+          // Generate all permutations from the valid words
+          const groupMatches = findPermutationMatches(compareAndCheck, groupWords);
+          console.log("Permutation Matches for group:", groupMatches);
+          anchorMatches.push(...groupMatches);
+        }
+      });
+    } else {
+      console.warn("No anchor groups found.");
+    }
     
-    console.log("Sliding Window Matches:", matches);
-
-    primeParts = matches.length ? matches : [];
+    primeParts = anchorMatches.length ? anchorMatches : [];
   } catch (error) {
-      console.error("Error in OCR:", error);
-      primeParts = [];
+    console.error("Error in OCR:", error);
+    primeParts = [];
   }
 
   if (!Array.isArray(primeParts) || primeParts.length === 0) {
     console.warn("No relics available.");
     return [];
   }
-  return primeParts.map( relicName => ({ relicName }));
+  return primeParts.map(relicName => ({ relicName }));
 }
 
 // ---------- Render Relic Cards ----------
@@ -75,24 +95,24 @@ async function renderRelicCards(relicContainer, validWordsSet, compareAndCheck, 
   relicContainer.innerHTML = "";
   if (typeof onScreen !== "undefined" && onScreen) {
     const relics = await runOCR(validWordsSet, compareAndCheck, dimensions);
+    console.log("Relics: ",relics);
     let highestPrice = 0;
     const relicData = [];
 
     for (const relic of relics) {
       let avgPrice = null;
+      const url = null;
       if (relic.relicName !== "Forma Blueprint") {
         const url = getCache(relic.relicName);
         avgPrice = await calculateRecentPrice(url);
       }
       relicData.push({ relicName: relic.relicName, avgPrice });
 
-      // Track the highest price relic
       if (avgPrice !== null && avgPrice > highestPrice) {
         highestPrice = avgPrice;
       }
     }
 
-    // Render relic cards
     for (const relic of relicData) {
       const isHighValue = relic.avgPrice === highestPrice && highestPrice !== 0;
       const cardElement = RelicInfoCard({ relicName: relic.relicName, avgPrice: relic.avgPrice, isHighValue });
