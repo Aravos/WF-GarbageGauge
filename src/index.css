@@ -156,3 +156,51 @@ button:hover {
   width: auto;
   margin-bottom: -0.15em;
 }
+
+/* Radio Button Container - Positioned on the right */
+.radio-container {
+  position: absolute;
+  right: 2%;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  padding: 15px;
+  border-radius: 6px;
+  text-align: center;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+}
+
+/* Styling for radio labels */
+.radio-container label {
+  display: block;
+  font-size: 1rem;
+  color: #d7d7d7;
+  margin-bottom: 5px;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+/* Styling for radio buttons */
+.radio-container input[type="radio"] {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  margin-right: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.radio-container input[type="radio"]:checked {
+  background: #ffd700; /* Gold highlight */
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+}
+
+.squad-container {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  background-color: rgba(255, 0, 0, 0.2); /* Light red overlay */
+  border: 2px solid red; /* Outline for each section */
+  box-sizing: border-box;
+}

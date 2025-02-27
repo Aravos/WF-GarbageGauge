@@ -27,8 +27,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const captureAreaButton = document.getElementById("capture-area-button");
   const highlightArea = document.querySelector(".highlight-area");
   const sliderContainer = document.querySelector(".slider-container");
-  
+  const radioContainer = document.querySelector(".radio-container");
+  const squadRadios = document.querySelectorAll('input[name="SquadSize"]');
+
   let dimensions = [];
+  let SquadSize = 4;
 
   const sliderLeft = document.getElementById("slider-left");
   const sliderTop = document.getElementById("slider-top");
@@ -61,7 +64,6 @@ document.addEventListener("DOMContentLoaded", () => {
     dimensions = [left / 100, top / 100, width / 100, height / 100];
     console.log("Updated dimensions:", dimensions);
   }
-
   // Attach event listeners to sliders.
   sliderLeft.addEventListener("input", updateHighlight);
   sliderTop.addEventListener("input", updateHighlight);
@@ -71,6 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
   updateHighlight();
   highlightArea.style.display = "none";
   sliderContainer.style.display = "none";
+  radioContainer.style.display = "none";
 
   const relicContainer = containerRelic();
   document.body.appendChild(relicContainer);
@@ -99,7 +102,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   captureAreaButton.addEventListener("click", () => {
-    // Toggle slider container visibility.
     showCaptureArea = !showCaptureArea;
     sliderContainer.style.display = showCaptureArea ? "flex" : "none";
     captureAreaButton.textContent = showCaptureArea ? "Hide Capture Area" : "Show Capture Area";
@@ -107,9 +109,28 @@ document.addEventListener("DOMContentLoaded", () => {
     // When showing, update the highlight area.
     if (showCaptureArea) {
       updateHighlight();
+      radioContainer.style.display = "block";
       highlightArea.style.display = "block";
     } else {
+      radioContainer.style.display = "none";
       highlightArea.style.display = "none";
     }
   });
+
+  document.getElementById("squad4").checked = true;
+  squadRadios.forEach((radio) => {
+    radio.addEventListener("change", (event) => {
+        console.log("Selected Squad Size:", event.target.value);
+        SquadSize = event.target.value;
+    });
+  });
+
+  squadRadios.forEach((radio) => {
+    radio.addEventListener("change", (event) => {
+      console.log("Selected Squad Size:", event.target.value);
+      SquadSize = parseInt(event.target.value);
+    });
+  });
+
+  
 });
