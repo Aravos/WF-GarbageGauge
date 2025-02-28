@@ -66,19 +66,22 @@ async function loadCache() {
     }
 
     const data = await response.json();
-    const items = data.payload.items.slice(0, data.length); // Limit cache to 10 items
+    const items = data.payload.items;
 
     console.log(`Fetching data for ${items.length} items...`);
 
     for (const item of items) {
-      setCache(item.item_name, item.url_name);
+      const loweredName = item.item_name.toLowerCase();
+      if (loweredName.includes("prime")) {
+        setCache(loweredName, item.url_name);
+      }
     }
 
     console.log("Cache populated:", Object.keys(getAllCache()).length);
-
   } catch (error) {
     console.error("Error fetching items:", error);
   }
 }
+
 
 module.exports = { getCache, getAllCache, loadCache, calculateRecentPrice, loadValidWordsSet };
