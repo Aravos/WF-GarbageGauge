@@ -2,6 +2,7 @@ const { ipcRenderer, screen } = require("electron");
 const { loadCache, loadValidWordsSet } = require("./cache.js");
 const { RelicInfoCard } = require("./components/RelicInfoCard.js");
 const { renderRelicCards, containerRelic } = require("./Relics.js");
+const { InitializeDb } = require("./Db/database.js");
 
 let onScreen = false;
 let showCaptureArea = false;
@@ -12,9 +13,16 @@ async function initialize() {
   try {
     await loadCache();
     ItemSet = await loadValidWordsSet(validWordsSet, ItemSet);
+    const loadingEl = document.getElementById("loading-message");
+    loadingEl.innerHTML = `<div id="spinner"></div>
+                          <p>Updating prices...</p>`;
+    loadingEl.style.display = "block";
+    await InitializeDb();
     validWordsSet.add("Forma Blueprint");
     const response = await ipcRenderer.invoke("set-valid-words", validWordsSet);
     console.log("Main process response:", response);
+    loadingEl.innerHTML = "";
+    loadingEl.style.display = "none";
   } catch (error) {
     console.error(error);
   }
@@ -42,9 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const filePath = await ipcRenderer.invoke("capture-screen");
         if (filePath) {
           console.log("Screenshot saved at:", filePath);
-          console.log("passed 3")
           renderRelicCards(relicContainer, validWordsSet, ItemSet);
-          console.log("passed 4")
         } else {
           console.error("Failed to capture screenshot.");
         }
