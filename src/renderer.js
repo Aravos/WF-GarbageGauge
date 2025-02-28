@@ -13,10 +13,16 @@ async function initialize() {
   try {
     await loadCache();
     ItemSet = await loadValidWordsSet(validWordsSet, ItemSet);
+    const loadingEl = document.getElementById("loading-message");
+    loadingEl.innerHTML = `<div id="spinner"></div>
+                          <p>Updating prices...</p>`;
+    loadingEl.style.display = "block";
     await InitializeDb();
     validWordsSet.add("Forma Blueprint");
     const response = await ipcRenderer.invoke("set-valid-words", validWordsSet);
     console.log("Main process response:", response);
+    loadingEl.innerHTML = "";
+    loadingEl.style.display = "none";
   } catch (error) {
     console.error(error);
   }

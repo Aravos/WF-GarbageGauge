@@ -1,17 +1,15 @@
 const { getCache, calculateRecentPrice } = require("./cache");
 const { ipcRenderer } = require("electron");
-const fs = require("fs").promises; // using fs.promises for async file operations
+const fs = require("fs").promises;
 const path = require("path");
 const { fetchPrice } = require("./Db/database");
 
-// Creates and returns a relic container element.
 function containerRelic() {
   const relicContainer = document.createElement("div");
   relicContainer.classList.add("relic-info-container");
   return relicContainer;
 }
 
-// Generates all permutations of an array.
 function generatePermutations(arr) {
   if (arr.length <= 1) return [arr];
   const results = [];
@@ -26,7 +24,6 @@ function generatePermutations(arr) {
   return results;
 }
 
-// Finds a matching phrase from permutations of validWords that exists in compareSet.
 function findPermutationMatches(compareSet, validWords) {
   const perms = generatePermutations(validWords);
   for (const perm of perms) {
@@ -54,7 +51,6 @@ async function runOCR(validWordsSet, compareAndCheck) {
       return [];
     }
 
-    // Invoke the OCR process via Electron's ipcRenderer.
     const { text, anchorGroups } = await ipcRenderer.invoke("perform-ocr", inputImage);
     const anchorMatches = [];
 
@@ -93,9 +89,11 @@ async function runOCR(validWordsSet, compareAndCheck) {
 
 // Renders relic cards by fetching OCR data and then updating the DOM.
 async function renderRelicCards(relicContainer, validWordsSet, compareAndCheck) {
-  relicContainer.innerHTML = "";
+  const loadingEl = document.getElementById("loading-message");
+  loadingEl.innerHTML = `<div id="spinner"></div>
+                          <p>Loading Prices...</p>`;
+  loadingEl.style.display = "block";
 
-  // Check if onScreen is defined and true.
   if (typeof onScreen !== "undefined" && onScreen) {
     const relics = await runOCR(validWordsSet, compareAndCheck);
     console.log("Relics:", relics);
@@ -113,13 +111,14 @@ async function renderRelicCards(relicContainer, validWordsSet, compareAndCheck) 
       })
     );
 
-    // Find the highest price among the relics.
     const highestPrice = relicData.reduce(
       (max, { avgPrice }) => (avgPrice !== null && avgPrice > max ? avgPrice : max),
       0
     );
 
-    // Create and append card elements for each relic.
+    loadingEl.innerHTML = "";
+    loadingEl.style.display = "none";
+
     relicData.forEach(relic => {
       const isHighValue = relic.avgPrice === highestPrice && highestPrice !== 0;
       const cardElement = RelicInfoCard({

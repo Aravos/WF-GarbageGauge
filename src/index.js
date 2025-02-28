@@ -64,7 +64,7 @@ async function processImageOCR(imagePath) {
       .threshold(125)
       .median(1)
       .toBuffer();
-  
+
     await sharp(croppedBuffer).toFile(path.join(__dirname, "final.png"));
     console.log("Final image saved as final.png.");
     const worker = await createWorker("eng");
@@ -80,7 +80,7 @@ async function processImageOCR(imagePath) {
     const text = data.text.toLowerCase();
     const anchorWords = new Set(["prime", "forma"]);
     const anchorGroups = groupWordsByAnchor(extractedWords, anchorWords);
-    console.log("Text: ",text);
+    console.log("Text: ", text);
     console.log("Detailed Anchor Groups:");
     anchorGroups.forEach((group, index) => {
       console.log(`Group ${index + 1}:`);
@@ -140,25 +140,25 @@ function groupWordsByAnchor(words, anchorSet, radius = 120) {
 function extractWordsFromTSV(tsvData) {
   const words = [];
   const lines = tsvData.split("\n");
-  
+
   for (const line of lines) {
     const parts = line.split("\t");
     if (parts.length >= 12) {
       const rawText = parts[11].trim();
       const cleanedText = rawText.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
       if (!cleanedText) continue;
-      
+
       const bbox = {
         x0: parseInt(parts[6], 10),
         y0: parseInt(parts[7], 10),
         x1: parseInt(parts[8], 10),
         y1: parseInt(parts[9], 10)
       };
-      
+
       words.push({ text: cleanedText, bbox });
     }
   }
-  
+
   return words;
 }
 ipcMain.handle("perform-ocr", async (event, imagePath) => {
