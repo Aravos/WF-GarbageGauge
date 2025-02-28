@@ -55,8 +55,6 @@ async function runOCR(validWordsSet, compareAndCheck) {
     
     // Get the OCR result (raw text and anchorGroups)
     const { text, anchorGroups } = await ipcRenderer.invoke("perform-ocr", inputImage);
-    console.log("OCR Text:", text);
-    console.log("OCR Anchor Groups:", anchorGroups);
     
     let anchorMatches = [];
     if (anchorGroups && anchorGroups.length > 0) {
@@ -69,7 +67,7 @@ async function runOCR(validWordsSet, compareAndCheck) {
         if (groupWords.length > 0) {
           // Generate all permutations from the valid words
           const groupMatches = findPermutationMatches(compareAndCheck, groupWords);
-          console.log("Permutation Matches for group:", groupMatches);
+          console.log("Permutation Match for group:", groupMatches);
           anchorMatches.push(...groupMatches);
         }
       });

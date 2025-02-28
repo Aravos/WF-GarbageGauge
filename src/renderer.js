@@ -13,6 +13,8 @@ async function initialize() {
     await loadCache();
     ItemSet = await loadValidWordsSet(validWordsSet, ItemSet);
     validWordsSet.add("Forma Blueprint");
+    const response = await ipcRenderer.invoke("set-valid-words", validWordsSet);
+    console.log("Main process response:", response);
   } catch (error) {
     console.error(error);
   }
