@@ -1,101 +1,118 @@
-const { getAllCache, getCache, calculateRecentPrice } = require("./cache");
+const { getCache, calculateRecentPrice } = require("./cache");
 const { ipcRenderer } = require("electron");
 const fs = require("fs");
 const path = require("path");
 
-// ---------- UI Relic Container ----------
 function containerRelic() {
-  // This function should return a new DOM element
   const relicContainer = document.createElement("div");
   relicContainer.classList.add("relic-info-container");
   return relicContainer;
 }
 
-
-function findSlidingWindowMatches(list, searchWords, minWindowSize = 2) {
-  console.log(list);
-  // const matches = new Set();
-  let matches = [];
-  const numWords = searchWords.length;
-  for (let windowSize = minWindowSize; windowSize <= numWords; windowSize++) {
-    for (let start = 0; start <= numWords - windowSize; start++) {
-      const phrase = searchWords.slice(start, start + windowSize).join(" ");
-      if (list.has(phrase)) {
-        matches.push([start, phrase]);
-      }else if (phrase.toLowerCase() === "forma blueprint"){
-        matches.push([start, "Forma Blueprint"]);
-      }
+function generatePermutations(arr) {
+  if (arr.length <= 1) return [arr];
+  const results = [];
+  for (let i = 0; i < arr.length; i++) {
+    const current = arr[i];
+    const remaining = arr.slice(0, i).concat(arr.slice(i + 1));
+    const remainingPermutations = generatePermutations(remaining);
+    for (const perm of remainingPermutations) {
+      results.push([current, ...perm]);
     }
   }
-  matches.sort((a, b) => a[0] - b[0]);
-  matches = matches.map(item => item[1]);
-  return matches;
+  return results;
 }
 
-// ---------- Generate Relics ----------
-async function runOCR(validWordsSet , compareAndCheck, dimensions) {
+function findPermutationMatches(compareSet, validWords) {
+  const perms = generatePermutations(validWords);
+  for (const perm of perms) {
+    const phrase = perm.join(" ");
+    console.log("Checking permutation:", phrase);
+    if (compareSet.has(phrase)) {
+      console.log("Match found:", phrase);
+      return phrase;
+    }
+  }
+  return null;
+}
+
+async function runOCR(validWordsSet, compareAndCheck) {
   let primeParts;
   try {
-    console.log(validWordsSet);
     const inputImage = path.join(__dirname, "./screenshot.png");
     if (!fs.existsSync(inputImage)) {
-    console.error("Image file not found:", inputImage);
-    return [];
+      console.error("Image file not found:", inputImage);
+      return [];
     }
-    
-    // Await the OCR result from main process via IPC
-    const text = await ipcRenderer.invoke("perform-ocr", inputImage, dimensions);
-    const cleanedText = text.replace(/[^a-zA-Z0-9\s]/g, "").replace(/\s+/g, " ").trim();
-    
-    // Filter out words not in validWordsSet
-    const cleanedWords = cleanedText
-    .split(" ")
-    .filter(word => validWordsSet.has(word));
-    console.log("Recognized Cleaned Words:", cleanedWords);
-    console.log("compareAndCheck:", compareAndCheck);
-    const matches = findSlidingWindowMatches(compareAndCheck, cleanedWords);
-    
-    console.log("Sliding Window Matches:", matches);
 
-    primeParts = matches.length ? matches : [];
+    const { text, anchorGroups } = await ipcRenderer.invoke("perform-ocr", inputImage);
+
+    let anchorMatches = [];
+    if (anchorGroups && anchorGroups.length > 0) {
+      for (const group of anchorGroups) {
+        if (group.anchor.text === "forma") {
+          anchorMatches.push("Forma Blueprint");
+          continue;
+        }
+
+        const groupWords = group.words.map(word => word.text);
+
+        console.log("Cleaned Group Words:", groupWords);
+        if (groupWords.length > 0) {
+          const groupMatch = findPermutationMatches(compareAndCheck, groupWords);
+          if (groupMatch) {
+            console.log("Permutation Match for group:", groupMatch);
+            anchorMatches.push(groupMatch);
+          }
+        }
+      }
+    } else {
+      console.warn("No anchor groups found.");
+    }
+
+    primeParts = anchorMatches.length ? anchorMatches : [];
   } catch (error) {
-      console.error("Error in OCR:", error);
-      primeParts = [];
+    console.error("Error in OCR:", error);
+    primeParts = [];
   }
 
   if (!Array.isArray(primeParts) || primeParts.length === 0) {
     console.warn("No relics available.");
     return [];
   }
-  return primeParts.map( relicName => ({ relicName }));
+  return primeParts.map(relicName => ({ relicName }));
 }
 
-// ---------- Render Relic Cards ----------
-async function renderRelicCards(relicContainer, validWordsSet, compareAndCheck, dimensions) {
+async function renderRelicCards(relicContainer, validWordsSet, compareAndCheck) {
   relicContainer.innerHTML = "";
   if (typeof onScreen !== "undefined" && onScreen) {
-    const relics = await runOCR(validWordsSet, compareAndCheck, dimensions);
+    const relics = await runOCR(validWordsSet, compareAndCheck);
+    console.log("Relics:", relics);
+
     let highestPrice = 0;
     const relicData = [];
 
     for (const relic of relics) {
       let avgPrice = null;
+      let url = null;
       if (relic.relicName !== "Forma Blueprint") {
-        const url = getCache(relic.relicName);
+        url = getCache(relic.relicName);
         avgPrice = await calculateRecentPrice(url);
       }
       relicData.push({ relicName: relic.relicName, avgPrice });
 
-      // Track the highest price relic
       if (avgPrice !== null && avgPrice > highestPrice) {
         highestPrice = avgPrice;
       }
     }
 
-    // Render relic cards
     for (const relic of relicData) {
       const isHighValue = relic.avgPrice === highestPrice && highestPrice !== 0;
-      const cardElement = RelicInfoCard({ relicName: relic.relicName, avgPrice: relic.avgPrice, isHighValue });
+      const cardElement = RelicInfoCard({
+        relicName: relic.relicName,
+        avgPrice: relic.avgPrice,
+        isHighValue
+      });
       
       if (cardElement instanceof Node) {
         relicContainer.appendChild(cardElement);
