@@ -1,5 +1,4 @@
 const { app, BrowserWindow, ipcMain, screen } = require("electron");
-const { setCache, getAllCache } = require("./cache.js");
 const sharp = require("sharp");
 const { createWorker } = require("tesseract.js");
 const { captureScreen } = require("./capture.js");
@@ -39,10 +38,6 @@ ipcMain.handle("capture-screen", async () => {
     console.error("Error capturing screen:", err);
     return null;
   }
-});
-
-ipcMain.handle("get-cache", async () => {
-  return getAllCache();
 });
 
 async function processImageOCR(imagePath) {
