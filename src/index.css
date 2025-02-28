@@ -40,19 +40,22 @@ html, body {
   font-weight: bold;
   font-size: 1rem;
   text-transform: uppercase;
-  color: #cd7f32; /* Bronze color */
+  color: #cd7f32;
+  /* Bronze color */
   text-shadow: 0 0 6px rgba(205, 127, 50, 0.7);
 }
 
 /* High-Value Relic Card */
 .relic-card.high-value {
-  border: 2px solid #ffd700; /* Gold border */
+  border: 2px solid #ffd700;
+  /* Gold border */
   box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
 }
 
 /* High-Value Relic Name */
 .relic-card.high-value p:first-child {
-  color: #ffd700; /* Gold color */
+  color: #ffd700;
+  /* Gold color */
   text-shadow: 0 0 10px rgba(255, 215, 0, 1);
 }
 
@@ -116,4 +119,27 @@ button:hover {
   height: 1em;
   width: auto;
   margin-bottom: -0.15em;
+}
+
+#loading-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+#spinner {
+  border: 8px solid rgba(205, 127, 50, 0.3);
+  border-top: 8px solid #cd7f32;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 10px auto;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
