@@ -17,7 +17,7 @@ function createWindow() {
     }
   });
   mainWindow.loadFile(path.join(__dirname, "index.html"));
-  mainWindow.webContents.openDevTools();
+  //mainWindow.webContents.openDevTools();
 }
 
 app.whenReady().then(() => {
@@ -48,18 +48,6 @@ async function processImageOCR(imagePath) {
     }
     const image = sharp(imagePath);
     const metadata = await image.metadata();
-    // const croppedBuffer = await image
-    //   .modulate({ brightness: 1.2, saturation: 2 })
-    //   .extract({
-    //     left: Math.floor(metadata.width * 0.1),
-    //     top: Math.floor(metadata.height * 0.1),
-    //     width: Math.floor(metadata.width * 0.8),
-    //     height: Math.floor(metadata.height * 0.8)
-    //   })
-    //   .gamma(3)
-    //   .greyscale()
-    //   .median(3)
-    //   .toBuffer();
     const croppedBuffer = await image
       .extract({
         left: Math.floor(metadata.width * 0.1),
