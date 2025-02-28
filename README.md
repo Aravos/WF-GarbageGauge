@@ -1,19 +1,21 @@
 # Warframe Relic Runner
 
-**Warframe Relic Runner** is an overlay tool for Warframe that helps you quickly evaluate the average Platinum value of relic rewards, making it easier to decide which Prime Part to select.
+**Warframe Relic Runner** is an overlay tool for Warframe that quickly evaluates the average Platinum value of relic rewards, making it easier to decide which Prime Part to select.
 
 ---
 
-## 📌 Features
+## ✨ Features
 
-- 📸 **Screenshot Capture** – Captures a screenshot when you crack open a relic.
-- 🔍 **OCR Extraction** – Uses Tesseract.js to automatically detect and parse Prime part text.
-- 💰 **Market Price Lookup** – Fetches the average market value from Warframe Market.
-- ✅ **Informed Decision Making** – Displays Prime Part values on-screen to help you choose the best reward.
-- 👥 **Team Support** – Works in solo play or teams of 1–4 players.
-- ⭐ **High-Value Relic Highlighting** – The most valuable relic reward is highlighted in **gold**, while others appear in **bronze**.
-- ⚖ **TOS Friendly** – This tool only captures screenshots and does **not** read game memory, making it compliant with Warframe’s Terms of Service.
-- 🖥 **Automatic Capture** – No need to select or adjust a capture area; the overlay handles various screen sizes seamlessly.
+- 📸 **Screenshot Capture:** Captures a screenshot when you crack open a relic.
+- 🔍 **OCR Extraction:** Uses Tesseract.js to automatically detect and parse Prime part text.
+- 💰 **Market Price Lookup:** Fetches average market values from Warframe Market.
+- 💾 **Local DB Caching:** Implements local SQLite caching with bulk updates to reduce relic lookup times from 5–10 seconds to under 1 second.
+- 🔄 **Loading Indicator:** Displays a spinner/loading indicator while updating database values and fetching prime part average prices.
+- ✅ **Informed Decision Making:** Shows Prime Part values on-screen to help you choose the best reward.
+- 👥 **Team Support:** Works in solo play or teams of 1–4 players.
+- ⭐ **High-Value Relic Highlighting:** Highlights the most valuable relic reward in gold, with others in bronze.
+- ⚖ **TOS Friendly:** Captures screenshots without reading game memory, ensuring compliance with Warframe’s Terms of Service.
+- 🖥 **Automatic Capture:** Automatically captures relic rewards eliminating the need for manual adjustments.
 
 ---
 
@@ -41,16 +43,13 @@ npm run
 
 1. **Launch Warframe** as usual.
 2. **Open the overlay application.**
-3. When you crack open a relic, click **Capture Screenshot** in the overlay.
-4. Wait a few seconds for the market values to load on-screen.
-5. **Choose the Prime part** based on the displayed Platinum value.
-6. **Golden Text = Highest Value Item** 🏆
-   - The **most valuable Prime part** is highlighted with **golden glowing text**.
-   - All other relic rewards appear in **bronze text**.
-7. Click **Clear** to reset the overlay.
-8. The overlay **automatically** captures relic rewards using anchor words, so there’s no need to adjust the screen area.
-9. Repeat the process for each relic.
-
+3. Wait a few minutes while the application updates prices 💾 (this update occurs once a day).
+4. The overlay **automatically** captures relic rewards, so there’s no need to adjust the screen area.
+5. When you crack open a relic, click **Capture Screenshot** in the overlay.
+6. **Choose the Prime Part** based on the displayed Platinum value.
+7. **Highest Value Indication:** The most valuable Prime part is highlighted in golden text; other relic rewards appear in bronze.
+8. Click **Clear** to reset the overlay.
+9. Repeat steps 5–8 for each run.
 ---
 
 <table>
@@ -90,6 +89,7 @@ npm run
 - 🧠 **Tesseract.js** – For Optical Character Recognition (OCR).
 - 🖼 **Sharp** – For image processing.
 - 🌐 **Node.js** – Backend processing and file system access.
+- 💾 **SQLite:** For local caching and efficient bulk updates.
 - 📊 **Warframe Market API** – Fetching real-time Platinum prices.
 - 🎨 **HTML, CSS, JavaScript** – Frontend design and user interaction.
 
