@@ -1,13 +1,11 @@
-/* Warframe UI-Inspired Styling */
 html, body {
   height: 100%;
   margin: 0;
   background: transparent;
-  font-family: 'Orbitron', sans-serif; /* Sleek, futuristic font */
-  color: #d7d7d7; /* Light gray to match Warframe's text */
+  font-family: 'Orbitron', sans-serif;
+  color: #d7d7d7;
 }
 
-/* Container for relic cards */
 .relic-info-container {
   position: absolute;
   top: 50%;
@@ -20,8 +18,6 @@ html, body {
   width: 90%;
 }
 
-/* Individual relic cards */
-/* Normal Relic Card */
 .relic-card {
   width: 13%;
   height: 120px;
@@ -82,7 +78,6 @@ html, body {
   text-shadow: 0 0 5px rgba(255, 255, 0, 0.5);
 }
 
-/* Title Styling */
 h1 {
   text-align: center;
   margin-top: 1rem;
@@ -92,7 +87,6 @@ h1 {
   text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
 }
 
-/* Button Styling */
 .button-container {
   position: absolute;
   left: 50%;
@@ -118,89 +112,8 @@ button:hover {
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
 }
 
-/* Capture Area Styling */
-.highlight-area {
-  position: absolute;
-  background: transparent;
-  border: 2px solid rgba(255, 255, 255, 0.8);
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
-  box-sizing: border-box;
-}
-
-/* Sliders (Hidden by default) */
-.slider-container {
-  display: none;
-  position: absolute;
-  bottom: 10%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.7);
-  padding: 10px;
-  border-radius: 6px;
-  color: white;
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.slider-container label {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: 14px;
-  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
-}
-
 .plat-icon {
   height: 1em;
   width: auto;
   margin-bottom: -0.15em;
-}
-
-/* Radio Button Container - Positioned on the right */
-.radio-container {
-  position: absolute;
-  right: 2%;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.7);
-  padding: 15px;
-  border-radius: 6px;
-  text-align: center;
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
-}
-
-/* Styling for radio labels */
-.radio-container label {
-  display: block;
-  font-size: 1rem;
-  color: #d7d7d7;
-  margin-bottom: 5px;
-  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
-}
-
-/* Styling for radio buttons */
-.radio-container input[type="radio"] {
-  appearance: none;
-  width: 16px;
-  height: 16px;
-  border: 2px solid #fff;
-  border-radius: 50%;
-  margin-right: 8px;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.radio-container input[type="radio"]:checked {
-  background: #ffd700; /* Gold highlight */
-  box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
-}
-
-.squad-container {
-  position: absolute;
-  top: 0;
-  height: 100%;
-  background-color: rgba(255, 0, 0, 0.2); /* Light red overlay */
-  border: 2px solid red; /* Outline for each section */
-  box-sizing: border-box;
 }

@@ -7,61 +7,13 @@
     <link rel="stylesheet" href="index.css">
 </head>
 <body>
-    <!-- Overlay for highlight area -->
-    <div class="overlay">
-        <div class="highlight-area"></div>
-    </div>
-
-    <!-- Relic Info Section -->
     <div class="relic-info-container">
-        <!-- Dynamically filled with relic cards -->
     </div>
 
-    <!-- Button Controls -->
     <div class="button-container">
         <button id="capture-button">Capture Screenshot</button>
-        <button id="capture-area-button">Adjust Capture Area</button>
     </div>
 
-    <div class="radio-container">
-        <p>Select Squad Size</p>
-        <input type="radio" id="squad1" name="SquadSize" value="1">
-        <label for="squad1">1</label><br>
-        
-        <input type="radio" id="squad2" name="SquadSize" value="2">
-        <label for="squad2">2</label><br>
-        
-        <input type="radio" id="squad3" name="SquadSize" value="3">
-        <label for="squad3">3</label><br>
-
-        <input type="radio" id="squad4" name="SquadSize" value="4">
-        <label for="squad4">4</label>
-    </div>
-
-    <div class="slider-container">
-        <label>
-            Left:
-            <input id="slider-left" type="range" min="0" max="100" value="25">
-            <span id="value-left">25%</span>
-        </label>
-        <label>
-            Top:
-            <input id="slider-top" type="range" min="0" max="100" value="38">
-            <span id="value-top">38%</span>
-        </label>
-        <label>
-            Width:
-            <input id="slider-width" type="range" min="0" max="100" value="50">
-            <span id="value-width">50%</span>
-        </label>
-        <label>
-            Height:
-            <input id="slider-height" type="range" min="0" max="100" value="5">
-            <span id="value-height">5%</span>
-        </label>
-    </div>
-
-    <!-- Include Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <script src="renderer.js"></script>
 </body>

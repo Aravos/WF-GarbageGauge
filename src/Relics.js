@@ -44,7 +44,7 @@ function findPermutationMatches(compareSet, validWords) {
 }
 
 // ---------- Generate Relics ----------
-async function runOCR(validWordsSet, compareAndCheck, dimensions) {
+async function runOCR(validWordsSet, compareAndCheck) {
   let primeParts;
   try {
     const inputImage = path.join(__dirname, "./screenshot.png");
@@ -54,7 +54,7 @@ async function runOCR(validWordsSet, compareAndCheck, dimensions) {
     }
     
     // Get the OCR result (raw text and anchorGroups)
-    const { text, anchorGroups } = await ipcRenderer.invoke("perform-ocr", inputImage, dimensions);
+    const { text, anchorGroups } = await ipcRenderer.invoke("perform-ocr", inputImage);
     console.log("OCR Text:", text);
     console.log("OCR Anchor Groups:", anchorGroups);
     
@@ -91,10 +91,10 @@ async function runOCR(validWordsSet, compareAndCheck, dimensions) {
 }
 
 // ---------- Render Relic Cards ----------
-async function renderRelicCards(relicContainer, validWordsSet, compareAndCheck, dimensions) {
+async function renderRelicCards(relicContainer, validWordsSet, compareAndCheck) {
   relicContainer.innerHTML = "";
   if (typeof onScreen !== "undefined" && onScreen) {
-    const relics = await runOCR(validWordsSet, compareAndCheck, dimensions);
+    const relics = await runOCR(validWordsSet, compareAndCheck);
     console.log("Relics: ",relics);
     let highestPrice = 0;
     const relicData = [];
