@@ -12,7 +12,7 @@ function RelicInfoCard({ relicName, avgPrice, isHighValue }) {
   
     relicCard.innerHTML = `
       <p>${relicName}</p>
-      <p>${avgPrice !== null ? avgPrice.toFixed(1) + " " + plat : "N/A"}</p>
+      <p>${avgPrice !== null ? avgPrice + " " + plat : "N/A"}</p>
     `;
   
     return relicCard;
