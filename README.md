@@ -118,3 +118,9 @@ npm run
 
 ## 📜 License
 This project is licensed under the **MIT License**.
+
+## ⚖ Legal Disclaimer
+
+"Warframe Relic Runner" is a third-party application and is **not affiliated with, endorsed by, or in any way officially connected to Digital Extremes or Warframe**. Warframe, its logo, and all related content are trademarks or registered trademarks of Digital Extremes Ltd. 
+
+This application does **not** modify game files or interact with the game’s memory, ensuring compliance with Warframe’s Terms of Service. Usage of this tool is at your own risk. The developer assumes no responsibility for any consequences resulting from its use.
