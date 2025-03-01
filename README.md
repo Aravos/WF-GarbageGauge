@@ -2,12 +2,10 @@
   <img 
     src="icons/myicon.ico" 
     width="80" 
-    style="vertical-align: text-bottom; margin-right: 10px;"
+    style="margin-right: 10px; margin-top: 5px;"
   />
   Warframe Relic Runner
 </h1>
-
-
 
 **Warframe Relic Runner** is an overlay tool for Warframe that quickly evaluates the average Platinum value of relic rewards, making it easier to decide which Prime Part to select.
 
