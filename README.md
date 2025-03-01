@@ -1,8 +1,8 @@
 <h1>
-  <img 
-    src="icons/myicon.ico" 
-    width="80" 
-    style="margin-right: 10px; margin-top: 5px;"
+  <img
+    src="https://i.imgur.com/0hEP2dV.png"
+    width="80"
+    style="vertical-align: middle"
   />
   Warframe Relic Runner
 </h1>
