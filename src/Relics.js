@@ -96,18 +96,18 @@ async function renderRelicCards(relicContainer, validWordsSet, compareAndCheck) 
 
   if (typeof onScreen !== "undefined" && onScreen) {
     const relics = await runOCR(validWordsSet, compareAndCheck);
-    console.log("Relics:", relics);
 
-    // Process all relics concurrently.
     const relicData = await Promise.all(
       relics.map(async (relic) => {
-        let avgPrice = null;
+        let numericAvgPrice = null;
         if (relic.relicName !== "Forma Blueprint") {
           const url = getCache(relic.relicName);
           const price = await fetchPrice(url);
-          avgPrice = price ? parseFloat(price.avg_price).toFixed(1) : null;
+          if (price && price.avg_price) {
+            numericAvgPrice = parseFloat(price.avg_price.toFixed(1));
+          }
         }
-        return { relicName: relic.relicName, avgPrice };
+        return { relicName: relic.relicName, avgPrice: numericAvgPrice };
       })
     );
 

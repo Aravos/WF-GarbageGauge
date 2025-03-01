@@ -10,6 +10,7 @@ function createWindow() {
     fullscreen: true,
     transparent: true,
     frame: false,
+    icon: path.join(__dirname, 'icons', 'myicon.ico'),
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       contextIsolation: false,
@@ -65,8 +66,8 @@ async function processImageOCR(imagePath) {
       .median(1)
       .toBuffer();
 
-    await sharp(croppedBuffer).toFile(path.join(__dirname, "final.png"));
-    console.log("Final image saved as final.png.");
+    // await sharp(croppedBuffer).toFile(path.join(__dirname, "final.png"));
+    // console.log("Final image saved as final.png.");
     const worker = await createWorker("eng");
     const { data } = await worker.recognize(croppedBuffer, {}, {
       words: true,
