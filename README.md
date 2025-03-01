@@ -1,6 +1,10 @@
-# Warframe Relic Runner
+<p>
+  <img src="icons/myicon.ico" width="80" style="vertical-align: middle; margin-right: 10px;" />
+  <span style="font-size: 2em; font-weight: bold;">Warframe Relic Runner</span>
+</p>
 
 **Warframe Relic Runner** is an overlay tool for Warframe that quickly evaluates the average Platinum value of relic rewards, making it easier to decide which Prime Part to select.
+
 
 ---
 
@@ -10,7 +14,6 @@
 - 🔍 **OCR Extraction:** Uses Tesseract.js to automatically detect and parse Prime part text.
 - 💰 **Market Price Lookup:** Fetches average market values from Warframe Market.
 - 💾 **Local DB Caching:** Implements local SQLite caching with bulk updates to reduce relic lookup times from 5–10 seconds to under 1 second.
-- 🔄 **Loading Indicator:** Displays a spinner/loading indicator while updating database values and fetching prime part average prices.
 - ✅ **Informed Decision Making:** Shows Prime Part values on-screen to help you choose the best reward.
 - 👥 **Team Support:** Works in solo play or teams of 1–4 players.
 - ⭐ **High-Value Relic Highlighting:** Highlights the most valuable relic reward in gold, with others in bronze.
