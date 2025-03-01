@@ -2,15 +2,27 @@
   <img
     src="https://i.imgur.com/0hEP2dV.png"
     width="80"
-    style="vertical-align: middle"
+    style="vertical-align: middle; margin-right: 10px;"
   />
   Warframe Relic Runner
 </h1>
 
 **Warframe Relic Runner** is an overlay tool for Warframe that quickly evaluates the average Platinum value of relic rewards, making it easier to decide which Prime Part to select.
 
-
 ---
+
+## 🎬 Demo Video
+
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=93ofLXJ-G3g" target="_blank">
+    <img src="https://i.imgur.com/1RTxkLp.jpeg" alt="Warframe Relic Runner Demo" width="560">
+  </a>
+</p>
+
+<p align="center">
+  <em>Watch the tool in action! This short demo shows how the overlay captures relic rewards, performs OCR, and fetches real-time Platinum values. <br>Click the thumbnail to watch the video.</em>
+</p>
+
 
 ## ✨ Features
 
@@ -83,10 +95,12 @@ npm run
 
 <table>
   <tr>
-    <th style="text-align:center;">Duplicate Rewards</th>
+    <th style="text-align:center;">Relic Selection Screen</th>
+    <th style="text-align:center;">Reward Value Display</th>
   </tr>
   <tr>
-    <td><img src="screenshots/5.webp" alt="Duplicates"></td>
+    <td><img src="screenshots/6.webp" alt="Relic Selection Screen"></td>
+    <td><img src="screenshots/7.webp" alt="Reward Value Display"></td>
   </tr>
 </table>
 

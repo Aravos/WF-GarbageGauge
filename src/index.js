@@ -17,8 +17,8 @@ function createWindow() {
       nodeIntegration: true
     }
   });
-  mainWindow.loadFile(path.join(__dirname, "index.html"));
-  mainWindow.webContents.openDevTools();
+  // mainWindow.loadFile(path.join(__dirname, "index.html"));
+  // mainWindow.webContents.openDevTools();
 }
 
 app.whenReady().then(() => {
@@ -50,19 +50,19 @@ async function processImageOCR(imagePath) {
     const image = sharp(imagePath);
     const metadata = await image.metadata();
     const croppedBuffer = await image
-      .extract({
-        left: Math.floor(metadata.width * 0.1),
-        top: Math.floor(metadata.height * 0.1),
-        width: Math.floor(metadata.width * 0.8),
-        height: Math.floor(metadata.height * 0.8)
-      })
+      // .extract({
+      //   left: Math.floor(metadata.width * 0.1),
+      //   top: Math.floor(metadata.height * 0.1),
+      //   width: Math.floor(metadata.width * 0.8),
+      //   height: Math.floor(metadata.height * 0.8)
+      // })
       .modulate({
         brightness: 0.5,
         saturation: 1.0
       })
       .greyscale()
       .normalize()
-      .threshold(125)
+      .threshold(130)
       .median(1)
       .toBuffer();
 
@@ -97,7 +97,7 @@ async function processImageOCR(imagePath) {
   }
 }
 
-function groupWordsByAnchor(words, anchorSet, radius = 120) {
+function groupWordsByAnchor(words, anchorSet, radius = 80) {
   const groups = [];
   words.forEach(w => {
     if (anchorSet.has(w.text)) {
